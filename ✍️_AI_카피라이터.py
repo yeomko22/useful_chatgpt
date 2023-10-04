@@ -5,7 +5,7 @@ st.set_page_config(page_title="칼퇴를 부르는 chatGPT 활용법", page_icon
 
 st.title("✍️ AI_카피라이터")
 st.subheader("AI를 이용하여 손쉽게 마케팅 문구를 생성해요.")
-openai.api_key = st.secrets["OPENAI_TOKEN"]
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 
 def request_chat_completion(messages, system_role, buffersize: int = 8):
@@ -48,30 +48,57 @@ def generate_prompt(name, description, max_length, generate_num, keywords):
 ---
 제품/브랜드 이름: {name}
 제품 간단 정보: {description}
----
 키워드: {keywords}
+---
 """
     return prompt.strip()
 
 
+auto_complete = st.toggle(label="예시로 채우기")
 with st.form("form"):
-    col1, col2, col3 = st.columns([0.5, 0.25, 0.25])
+    col1, col2, col3 = st.columns(3)
     with col1:
-        name = st.text_input("제품/브랜드 이름(필수)")
+        example_brand = "카누"
+        name = st.text_input(
+            label="제품/브랜드 이름(필수)",
+            value=example_brand if auto_complete else ""
+        )
     with col2:
         max_length = st.number_input("최대 단어 수", min_value=5, max_value=20, step=1, value=10)
     with col3:
         generate_num = st.number_input("생성할 문구 수", min_value=1, max_value=10, step=1, value=5)
-    desc = st.text_input("제품 간단 정보(필수)")
+    example_desc = "집에서도 카페 느낌의 아메리카노 맛이 나는 커피 믹스"
+    desc = st.text_input(
+        label="제품 간단 정보(필수)",
+        value=example_desc if auto_complete else ""
+    )
 
     st.text("포함할 키워드(최대 3개까지 허용)")
     col1, col2, col3 = st.columns(3)
     with col1:
-        keyword_one = st.text_input(placeholder="키워드 1", label="keyword_1", label_visibility="collapsed")
+        example_keyword_one = "브라질"
+        keyword_one = st.text_input(
+            label="keyword_1",
+            label_visibility="collapsed",
+            placeholder="키워드 1",
+            value=example_keyword_one if auto_complete else ""
+        )
     with col2:
-        keyword_two = st.text_input(placeholder="키워드 2", label="keyword_2", label_visibility="collapsed")
+        example_keyword_two = "카페"
+        keyword_two = st.text_input(
+            label="keyword_2",
+            label_visibility="collapsed",
+            placeholder="키워드 2",
+            value=example_keyword_two if auto_complete else ""
+        )
     with col3:
-        keyword_three = st.text_input(placeholder="키워드 3", label="keyword_3", label_visibility="collapsed")
+        example_keyword_three = "공유"
+        keyword_three = st.text_input(
+            label="keyword_3",
+            label_visibility="collapsed",
+            placeholder="키워드 3",
+            value=example_keyword_three if auto_complete else ""
+        )
     submitted = st.form_submit_button("Submit")
 if submitted:
     if not name:
