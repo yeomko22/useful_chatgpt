@@ -1,9 +1,9 @@
 import openai
 import streamlit as st
-from common import request_chat_completion, print_streaming_response
+from common import request_chat_completion, print_streaming_response, write_page_config
 
 
-st.set_page_config(page_title="해줘! chatGPT", page_icon="🙏")
+write_page_config()
 st.title("🧑‍💼 기업별 맞춤형 자기소개서")
 st.markdown("자기소개서 질문과 지원자의 경험을 바탕으로 답변을 작성해줍니다. 예시를 채운 다음 자소서를 작성해보세요!")
 openai.api_key = st.secrets["OPENAI_API_KEY"]

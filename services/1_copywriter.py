@@ -1,10 +1,9 @@
 import openai
 import streamlit as st
 
-from common import request_chat_completion, print_streaming_response
+from common import request_chat_completion, print_streaming_response, write_page_config
 
-
-st.set_page_config(page_title="해줘! chatGPT", page_icon="🙏")
+write_page_config()
 st.title("✍️ AI_카피라이터")
 st.subheader("AI를 이용하여 손쉽게 마케팅 문구를 생성해보세요.")
 openai.api_key = st.secrets["OPENAI_API_KEY"]
