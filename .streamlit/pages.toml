@@ -1,0 +1,19 @@
+[[pages]]
+path = "app.py"
+name = "홈"
+icon = "🏠"
+
+[[pages]]
+path = "services/1_copywriter.py"
+name = "마케팅 문구 생성기"
+icon = "✍️"
+
+[[pages]]
+path = "services/2_resume_helper.py"
+name = "자기소개서 도우미"
+icon = "🧑‍💼"
+
+[[pages]]
+path = "services/3_youtube_shorts.py"
+name = "유튜브 쇼츠 대본 생성기"
+icon = "▶️"

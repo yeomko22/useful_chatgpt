@@ -1,21 +1,12 @@
 import openai
 import streamlit as st
+from common import request_chat_completion, print_streaming_response
 
+
+st.set_page_config(page_title="해줘! chatGPT", page_icon="🙏")
 st.title("🧑‍💼 기업별 맞춤형 자기소개서")
-st.text("기업별 인재상과 질문에 맞춰서 자기소개서 초안을 작성해줍니다. 예시를 채운 다음 자소서 작성 버튼을 눌러보세요!")
+st.markdown("자기소개서 질문과 지원자의 경험을 바탕으로 답변을 작성해줍니다. 예시를 채운 다음 자소서를 작성해보세요!")
 openai.api_key = st.secrets["OPENAI_API_KEY"]
-
-
-def request_chat_completion(messages, system_role=None):
-    if system_role:
-        messages = [{"role": "system", "content": system_role}] + messages
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        stream=True,
-        timeout=3
-    )
-    return response
 
 
 def generate_prompt(company, position, question, experience, max_length):
@@ -23,6 +14,8 @@ def generate_prompt(company, position, question, experience, max_length):
 기업 입사용 자기소개서를 작성해야합니다.
 답변해야하는 질문과 이에 관련된 유저의 경험을 참고해서 자기소개서를 작성해주세요.
 반드시 공백을 포함해서 {max_length}자 이내로 작성해주세요.
+반드시 문단마다 [text] 형태의 소제목을 적어주세요.
+소제목에는 "소제목", "제목", "본문" 등의 단어가 포함되어서는 안됩니다.
 ---
 지원 회사: {company}
 지원 직무: {position}
@@ -31,20 +24,6 @@ def generate_prompt(company, position, question, experience, max_length):
 ---
     """.strip()
     return prompt
-
-
-def print_streaming_response(response):
-    message = ""
-    placeholder = st.empty()
-    for chunk in response:
-        delta = chunk.choices[0]["delta"]
-        if "content" in delta:
-            message += delta["content"]
-            placeholder.markdown(message + "▌")
-        else:
-            break
-    placeholder.markdown(message)
-    return message
 
 
 auto_complete = st.toggle(label="예시로 채우기", value=False)
@@ -69,7 +48,8 @@ with st.form(f"form_{auto_complete}"):
     example_question = "소속된 조직의 공동과업을 달성하는 과정에서 발생했던 어려움과 그 어려움을 극복하기 위해 기울인 노력에 대해 구체적인 사례를 바탕으로 기술해 주십시오."
     question = st.text_area(
         label="질문",
-        value=example_question if auto_complete else ""
+        value=example_question if auto_complete else "",
+        placeholder="기업의 질문 문항을 채워주세요."
     )
     example_experience = """
 대학교 3학년 때 축구부 주장 역임

@@ -1,39 +1,13 @@
 import openai
 import streamlit as st
 
-st.set_page_config(page_title="칼퇴를 부르는 chatGPT 활용법", page_icon="✨")
+from common import request_chat_completion, print_streaming_response
 
+
+st.set_page_config(page_title="해줘! chatGPT", page_icon="🙏")
 st.title("✍️ AI_카피라이터")
-st.subheader("AI를 이용하여 손쉽게 마케팅 문구를 생성해요.")
+st.subheader("AI를 이용하여 손쉽게 마케팅 문구를 생성해보세요.")
 openai.api_key = st.secrets["OPENAI_API_KEY"]
-
-
-def request_chat_completion(messages, system_role, buffersize: int = 8):
-    if len(messages) > buffersize:
-        messages = messages[-buffersize:]
-    if system_role:
-        messages = [{"role": "system", "content": system_role}] + messages
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        stream=True,
-        timeout=3
-    )
-    return response
-
-
-def print_streaming_response(response):
-    message = ""
-    placeholder = st.empty()
-    for chunk in response:
-        delta = chunk.choices[0]["delta"]
-        if "content" in delta:
-            message += delta["content"]
-            placeholder.markdown(message + "▌")
-        else:
-            break
-    placeholder.markdown(message)
-    return message
 
 
 def generate_prompt(name, description, max_length, generate_num, keywords):
@@ -61,7 +35,8 @@ with st.form("form"):
         example_brand = "카누"
         name = st.text_input(
             label="제품/브랜드 이름(필수)",
-            value=example_brand if auto_complete else ""
+            value=example_brand if auto_complete else "",
+            placeholder=example_brand
         )
     with col2:
         max_length = st.number_input("최대 단어 수", min_value=5, max_value=20, step=1, value=10)
@@ -70,7 +45,8 @@ with st.form("form"):
     example_desc = "집에서도 카페 느낌의 아메리카노 맛이 나는 커피 믹스"
     desc = st.text_input(
         label="제품 간단 정보(필수)",
-        value=example_desc if auto_complete else ""
+        value=example_desc if auto_complete else "",
+        placeholder=example_desc
     )
 
     st.text("포함할 키워드(최대 3개까지 허용)")
@@ -80,7 +56,7 @@ with st.form("form"):
         keyword_one = st.text_input(
             label="keyword_1",
             label_visibility="collapsed",
-            placeholder="키워드 1",
+            placeholder=example_keyword_one,
             value=example_keyword_one if auto_complete else ""
         )
     with col2:
@@ -88,7 +64,7 @@ with st.form("form"):
         keyword_two = st.text_input(
             label="keyword_2",
             label_visibility="collapsed",
-            placeholder="키워드 2",
+            placeholder=example_keyword_two,
             value=example_keyword_two if auto_complete else ""
         )
     with col3:
@@ -96,7 +72,7 @@ with st.form("form"):
         keyword_three = st.text_input(
             label="keyword_3",
             label_visibility="collapsed",
-            placeholder="키워드 3",
+            placeholder=example_keyword_three,
             value=example_keyword_three if auto_complete else ""
         )
     submitted = st.form_submit_button("Submit")
