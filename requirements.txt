@@ -1,3 +1,4 @@
 st-pages
 openai
 pyperclip
+BeautifulSoup
