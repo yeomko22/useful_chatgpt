@@ -1,6 +1,7 @@
 import requests
 import streamlit as st
 from bs4 import BeautifulSoup
+
 from common import request_chat_completion, write_streaming_response
 
 prompt_template = """
