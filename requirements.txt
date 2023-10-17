@@ -1,5 +1,4 @@
 st-pages
 openai
-pyperclip
 beautifulsoup4
 lxml
