@@ -1,7 +1,7 @@
 import streamlit as st
 from st_pages import show_pages_from_config
 
-from common import write_page_config, print_streaming_message
+from common import write_page_config, write_streaming_response
 
 show_pages_from_config()
 write_page_config()
@@ -23,7 +23,7 @@ if "first_visit" not in st.session_state:
     st.session_state.first_visit = False
 
 if st.session_state.first_visit:
-    print_streaming_message(welcome_message)
+    write_streaming_response(welcome_message)
     st.session_state.first_visit = False
 else:
     st.markdown(welcome_message)
