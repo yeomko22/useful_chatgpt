@@ -4,6 +4,7 @@ import streamlit as st
 from bs4 import BeautifulSoup
 
 from common import write_page_config, request_chat_completion
+from common import print_streaming_response
 
 write_page_config()
 st.title("유튜브 쇼츠 대본 생성기")
@@ -66,21 +67,5 @@ if submit:
         system_role=system_role,
         messages=[{"role": "user", "content": prompt}]
     )
-    message = ""
-    for chunk in response:
-        delta = chunk.choices[0]["delta"]
-        if "content" in delta:
-            message += delta["content"]
-            placeholder.markdown(message + "▌")
-        else:
-            break
-    placeholder.markdown(message)
-    st.session_state.script = message
+    print_streaming_response(response)
 
-
-if st.session_state.script:
-    placeholder.markdown(st.session_state.script)
-    copy_button = st.button("📎 대본 복사하기")
-    if copy_button:
-        pyperclip.copy(st.session_state.script)
-        success = st.success("클립보드에 복사했습니다!", icon="✅")
