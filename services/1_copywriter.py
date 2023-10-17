@@ -1,7 +1,7 @@
 import openai
 import streamlit as st
 
-from common import request_chat_completion, print_streaming_response, write_page_config
+from common import request_chat_completion, write_streaming_response, write_page_config
 
 write_page_config()
 st.title("✍️ AI_카피라이터")

@@ -1,21 +1,30 @@
-import random
-import time
-
-import openai
 import streamlit as st
+import openai
 
 
-def print_streaming_message(message: str):
-    placeholder = st.empty()
-    cur_message = ""
-    for chr_ in message:
-        cur_message += chr_
-        placeholder.markdown(f"{cur_message} ▌")
-        time.sleep(random.randint(1, 2) / 100)
-    placeholder.markdown(cur_message)
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 
-def print_streaming_response(response):
+def write_page_config():
+    st.set_page_config(
+        page_title="AI 서비스 개발하기",
+        page_icon="🧠"
+    )
+
+
+def request_chat_completion(prompt, stream=False, system_role=None):
+    messages = [{"role": "user", "content": prompt}]
+    if system_role:
+        messages = [{"role": "system", "content": system_role}] + messages
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        stream=stream
+    )
+    return response
+
+
+def write_streaming_response(response):
     message = ""
     placeholder = st.empty()
     for chunk in response:
@@ -27,19 +36,3 @@ def print_streaming_response(response):
             break
     placeholder.markdown(message)
     return message
-
-
-def write_page_config():
-    st.set_page_config(page_title="chatGPT AI 서비스 개발", page_icon="🧠")
-
-
-def request_chat_completion(messages, system_role=None):
-    if system_role:
-        messages = [{"role": "system", "content": system_role}] + messages
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        stream=True,
-        timeout=3
-    )
-    return response
